@@ -1,0 +1,75 @@
+This is an interpreter that translates a pseudocode of probabilistic program (.pp file)
+and outputs the description of optimization problem that is ready to be solved by 
+an LP or SDP solver (.mod file or .m file, depending on the template type).
+
+In each folder (gammaSclSubM, deltaNNRepSupM, epsilonRepSupM) the source code of 
+the interpreter for the corresponding martingale technique is provided. 
+run "./make" to compile the code. 
+
+Compiled file calls for an input .pp file and options of the following form:
+  ./main_$MartingaleName [filename] [options]
+
+
+
+**List of options**
+*general
+
+-distr_usage		Show some help about description of probability distributions.
+			Must be called without [filename] (./main -distr_usage).
+
+-lin, linear		Set the template type as linear.
+
+-poly, -polynomial	Set the template type as polynomial.
+
+-sch, -schumuedgen	Use Schmüdgen's Positivstellensatz for the reduction of reachability problem.
+			This automatically sets the template type as polynomial.
+
+-put, -putinar		Use Putinar's Positivstellensatz for the reduction of reachability problem.
+			This automatically sets the template type as polynomial.
+
+-deg [int]		Set the degree of polynomial template as [int]. The default number is 2.
+			This automatically sets the template type as polynomial.
+
+-sosdeg [int]		Set the degree of monomials that appear in Sum Of Square decomposition as [int]. 
+			The default number is 1. This automatically sets the template type as polynomial.
+
+-o [string]		Set the file name of the output as [string]. 
+			If this option is not used, then a filename is automatically generated.
+
+-solver [string]	Set the SDP solver as [string]. This option is available only for polynomial template.
+			The default value is sedumi.
+			This option adds to the output the option "option.solver = '[string]';". 
+			For the detail and available solvers, see the SOSTOOLS user's guide:
+			http://sysos.eng.ox.ac.uk/sostools/sostools.pdf
+
+
+*gammaSclSubM
+
+-gamma [float]		Specify the range of the gamma parameter.
+			"eq[float]" or "[float]" sets the condition as "gamma = [float]" (e.g. "-gamma eq0.9").
+			"geq[float]" sets the condition as "gamma >= [float]" (e.g. "-gamma geq0.9").
+			The default value is 0.9.
+
+
+*deltaNNRepSupM
+
+-delta [float]		Specify the delta parameter. By letting zero, the program generates the "normal" NNRepSupM synthesis problem.
+
+-N [int]		Specify the the N parameter (the bound of steps). The default value is 100. This value is irrelevant when
+			delta is zero.
+
+
+*epsilonRepSupM
+
+-epsilon [float]	Specify the epsilon parameter.
+
+-kappa [float]		Specify the kappa parameter.
+
+-kappamin		Let the kappa parameter be an unknown coefficient of the optimization problem, and change the objective function
+			to (the unknown coefficient) kappa. This is used in the heuristic synthesis algorithm in [Chatterjee+, POPL17] 
+			to decide the initial value of kappa. Do not use with the -kappa option.
+
+
+
+
+	

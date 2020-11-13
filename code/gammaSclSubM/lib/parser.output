@@ -1,0 +1,1688 @@
+   0  $accept : %entry% $end
+
+   1  program : global stmt EOF
+   2          | stmt EOF
+
+   3  stmt : assgn
+   4       | SKIP
+   5       | LPARAN stmt RPARAN
+   6       | stmt SEMICOLON stmt
+   7       | IF ndbexpr THEN stmt ELSE stmt FI
+   8       | WHILE bexpr DO stmt OD
+   9       | LBRACKET bexpr RBRACKET
+  10       | LSQBRACKET bexpr RSQBRACKET
+  11       | ASSUME bexpr
+  12       | LBRACKET bexpr RBRACKET stmt
+  13       | LSQBRACKET bexpr RSQBRACKET stmt
+  14       | ASSERT bexpr
+
+  15  assgn : pvar ASSGN expr
+  16        | pvar ASSGN NDET dom
+  17        | pvar ASSGN dist
+
+  18  expr : const
+  19       | pvar
+  20       | LPARAN expr RPARAN
+  21       | expr PLUS expr
+  22       | expr MINUS expr
+  23       | expr STAR expr
+  24       | expr HAT POSINT
+
+  25  dom : LPARAN dom RPARAN
+  26      | dom_basis
+  27      | dom_basis OR dom
+
+  28  dom_basis : INT
+  29            | REAL
+  30            | INT LSQBRACKET const COMMA const RSQBRACKET
+  31            | REAL LSQBRACKET const COMMA const RSQBRACKET
+
+  32  bexpr : affexpr
+  33        | affexpr OR bexpr
+
+  34  affexpr : LPARAN affexpr RPARAN
+  35          | expr EQ expr
+  36          | literal
+  37          | affexpr AND affexpr
+
+  38  literal : TRUE
+  39          | FALSE
+  40          | expr LEQ expr
+  41          | expr GEQ expr
+  42          | expr LT expr
+  43          | expr GT expr
+  44          | NOT literal
+
+  45  ndbexpr : STAR
+  46          | PROB LPARAN const RPARAN
+  47          | bexpr
+
+  48  pvar : ID
+
+  49  dist : ID LPARAN const_list RPARAN
+
+  50  const_list : const
+  51             | const COMMA const_list
+
+  52  const : POSINT
+  53        | FLOAT
+  54        | MINUS POSINT
+  55        | MINUS FLOAT
+
+  56  global : DOLLAR bexpr
+
+  57  %entry% : '\001' program
+
+state 0
+	$accept : . %entry% $end  (0)
+
+	'\001'  shift 1
+	.  error
+
+	%entry%  goto 2
+
+
+state 1
+	%entry% : '\001' . program  (57)
+
+	ID  shift 3
+	SKIP  shift 4
+	IF  shift 5
+	WHILE  shift 6
+	ASSUME  shift 7
+	ASSERT  shift 8
+	LSQBRACKET  shift 9
+	LPARAN  shift 10
+	DOLLAR  shift 11
+	LBRACKET  shift 12
+	.  error
+
+	program  goto 13
+	global  goto 14
+	stmt  goto 15
+	assgn  goto 16
+	pvar  goto 17
+
+
+state 2
+	$accept : %entry% . $end  (0)
+
+	$end  accept
+
+
+state 3
+	pvar : ID .  (48)
+
+	.  reduce 48
+
+
+state 4
+	stmt : SKIP .  (4)
+
+	.  reduce 4
+
+
+state 5
+	stmt : IF . ndbexpr THEN stmt ELSE stmt FI  (7)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	STAR  shift 22
+	MINUS  shift 23
+	NOT  shift 24
+	PROB  shift 25
+	LPARAN  shift 26
+	.  error
+
+	ndbexpr  goto 27
+	bexpr  goto 28
+	pvar  goto 29
+	expr  goto 30
+	const  goto 31
+	affexpr  goto 32
+	literal  goto 33
+
+
+state 6
+	stmt : WHILE . bexpr DO stmt OD  (8)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 26
+	.  error
+
+	bexpr  goto 34
+	pvar  goto 29
+	expr  goto 30
+	const  goto 31
+	affexpr  goto 32
+	literal  goto 33
+
+
+state 7
+	stmt : ASSUME . bexpr  (11)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 26
+	.  error
+
+	bexpr  goto 35
+	pvar  goto 29
+	expr  goto 30
+	const  goto 31
+	affexpr  goto 32
+	literal  goto 33
+
+
+state 8
+	stmt : ASSERT . bexpr  (14)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 26
+	.  error
+
+	bexpr  goto 36
+	pvar  goto 29
+	expr  goto 30
+	const  goto 31
+	affexpr  goto 32
+	literal  goto 33
+
+
+state 9
+	stmt : LSQBRACKET . bexpr RSQBRACKET  (10)
+	stmt : LSQBRACKET . bexpr RSQBRACKET stmt  (13)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 26
+	.  error
+
+	bexpr  goto 37
+	pvar  goto 29
+	expr  goto 30
+	const  goto 31
+	affexpr  goto 32
+	literal  goto 33
+
+
+state 10
+	stmt : LPARAN . stmt RPARAN  (5)
+
+	ID  shift 3
+	SKIP  shift 4
+	IF  shift 5
+	WHILE  shift 6
+	ASSUME  shift 7
+	ASSERT  shift 8
+	LSQBRACKET  shift 9
+	LPARAN  shift 10
+	LBRACKET  shift 12
+	.  error
+
+	stmt  goto 38
+	assgn  goto 16
+	pvar  goto 17
+
+
+state 11
+	global : DOLLAR . bexpr  (56)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 26
+	.  error
+
+	bexpr  goto 39
+	pvar  goto 29
+	expr  goto 30
+	const  goto 31
+	affexpr  goto 32
+	literal  goto 33
+
+
+state 12
+	stmt : LBRACKET . bexpr RBRACKET  (9)
+	stmt : LBRACKET . bexpr RBRACKET stmt  (12)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 26
+	.  error
+
+	bexpr  goto 40
+	pvar  goto 29
+	expr  goto 30
+	const  goto 31
+	affexpr  goto 32
+	literal  goto 33
+
+
+state 13
+	%entry% : '\001' program .  (57)
+
+	.  reduce 57
+
+
+state 14
+	program : global . stmt EOF  (1)
+
+	ID  shift 3
+	SKIP  shift 4
+	IF  shift 5
+	WHILE  shift 6
+	ASSUME  shift 7
+	ASSERT  shift 8
+	LSQBRACKET  shift 9
+	LPARAN  shift 10
+	LBRACKET  shift 12
+	.  error
+
+	stmt  goto 41
+	assgn  goto 16
+	pvar  goto 17
+
+
+state 15
+	program : stmt . EOF  (2)
+	stmt : stmt . SEMICOLON stmt  (6)
+
+	SEMICOLON  shift 42
+	EOF  shift 43
+	.  error
+
+
+state 16
+	stmt : assgn .  (3)
+
+	.  reduce 3
+
+
+state 17
+	assgn : pvar . ASSGN expr  (15)
+	assgn : pvar . ASSGN NDET dom  (16)
+	assgn : pvar . ASSGN dist  (17)
+
+	ASSGN  shift 44
+	.  error
+
+
+state 18
+	const : FLOAT .  (53)
+
+	.  reduce 53
+
+
+state 19
+	const : POSINT .  (52)
+
+	.  reduce 52
+
+
+state 20
+	literal : TRUE .  (38)
+
+	.  reduce 38
+
+
+state 21
+	literal : FALSE .  (39)
+
+	.  reduce 39
+
+
+state 22
+	ndbexpr : STAR .  (45)
+
+	.  reduce 45
+
+
+state 23
+	const : MINUS . POSINT  (54)
+	const : MINUS . FLOAT  (55)
+
+	FLOAT  shift 45
+	POSINT  shift 46
+	.  error
+
+
+state 24
+	literal : NOT . literal  (44)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 48
+	const  goto 31
+	literal  goto 49
+
+
+state 25
+	ndbexpr : PROB . LPARAN const RPARAN  (46)
+
+	LPARAN  shift 50
+	.  error
+
+
+state 26
+	expr : LPARAN . expr RPARAN  (20)
+	affexpr : LPARAN . affexpr RPARAN  (34)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 26
+	.  error
+
+	pvar  goto 29
+	expr  goto 51
+	const  goto 31
+	affexpr  goto 52
+	literal  goto 33
+
+
+state 27
+	stmt : IF ndbexpr . THEN stmt ELSE stmt FI  (7)
+
+	THEN  shift 53
+	.  error
+
+
+state 28
+	ndbexpr : bexpr .  (47)
+
+	.  reduce 47
+
+
+state 29
+	expr : pvar .  (19)
+
+	.  reduce 19
+
+
+state 30
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+	affexpr : expr . EQ expr  (35)
+	literal : expr . LEQ expr  (40)
+	literal : expr . GEQ expr  (41)
+	literal : expr . LT expr  (42)
+	literal : expr . GT expr  (43)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	LT  shift 58
+	GT  shift 59
+	LEQ  shift 60
+	GEQ  shift 61
+	EQ  shift 62
+	.  error
+
+
+state 31
+	expr : const .  (18)
+
+	.  reduce 18
+
+
+state 32
+	bexpr : affexpr .  (32)
+	bexpr : affexpr . OR bexpr  (33)
+	affexpr : affexpr . AND affexpr  (37)
+
+	AND  shift 63
+	OR  shift 64
+	ID  reduce 32
+	SKIP  reduce 32
+	SEMICOLON  reduce 32
+	IF  reduce 32
+	THEN  reduce 32
+	ELSE  reduce 32
+	FI  reduce 32
+	WHILE  reduce 32
+	DO  reduce 32
+	OD  reduce 32
+	ASSUME  reduce 32
+	ASSERT  reduce 32
+	LSQBRACKET  reduce 32
+	RSQBRACKET  reduce 32
+	LPARAN  reduce 32
+	RPARAN  reduce 32
+	LBRACKET  reduce 32
+	RBRACKET  reduce 32
+	EOF  reduce 32
+
+
+state 33
+	affexpr : literal .  (36)
+
+	.  reduce 36
+
+
+state 34
+	stmt : WHILE bexpr . DO stmt OD  (8)
+
+	DO  shift 65
+	.  error
+
+
+state 35
+	stmt : ASSUME bexpr .  (11)
+
+	.  reduce 11
+
+
+state 36
+	stmt : ASSERT bexpr .  (14)
+
+	.  reduce 14
+
+
+state 37
+	stmt : LSQBRACKET bexpr . RSQBRACKET  (10)
+	stmt : LSQBRACKET bexpr . RSQBRACKET stmt  (13)
+
+	RSQBRACKET  shift 66
+	.  error
+
+
+state 38
+	stmt : LPARAN stmt . RPARAN  (5)
+	stmt : stmt . SEMICOLON stmt  (6)
+
+	SEMICOLON  shift 42
+	RPARAN  shift 67
+	.  error
+
+
+state 39
+	global : DOLLAR bexpr .  (56)
+
+	.  reduce 56
+
+
+state 40
+	stmt : LBRACKET bexpr . RBRACKET  (9)
+	stmt : LBRACKET bexpr . RBRACKET stmt  (12)
+
+	RBRACKET  shift 68
+	.  error
+
+
+state 41
+	program : global stmt . EOF  (1)
+	stmt : stmt . SEMICOLON stmt  (6)
+
+	SEMICOLON  shift 42
+	EOF  shift 69
+	.  error
+
+
+state 42
+	stmt : stmt SEMICOLON . stmt  (6)
+
+	ID  shift 3
+	SKIP  shift 4
+	IF  shift 5
+	WHILE  shift 6
+	ASSUME  shift 7
+	ASSERT  shift 8
+	LSQBRACKET  shift 9
+	LPARAN  shift 10
+	LBRACKET  shift 12
+	.  error
+
+	stmt  goto 70
+	assgn  goto 16
+	pvar  goto 17
+
+
+state 43
+	program : stmt EOF .  (2)
+
+	.  reduce 2
+
+
+state 44
+	assgn : pvar ASSGN . expr  (15)
+	assgn : pvar ASSGN . NDET dom  (16)
+	assgn : pvar ASSGN . dist  (17)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 71
+	NDET  shift 72
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 73
+	dist  goto 74
+	const  goto 31
+
+
+state 45
+	const : MINUS FLOAT .  (55)
+
+	.  reduce 55
+
+
+state 46
+	const : MINUS POSINT .  (54)
+
+	.  reduce 54
+
+
+state 47
+	expr : LPARAN . expr RPARAN  (20)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 75
+	const  goto 31
+
+
+state 48
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+	literal : expr . LEQ expr  (40)
+	literal : expr . GEQ expr  (41)
+	literal : expr . LT expr  (42)
+	literal : expr . GT expr  (43)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	LT  shift 58
+	GT  shift 59
+	LEQ  shift 60
+	GEQ  shift 61
+	.  error
+
+
+state 49
+	literal : NOT literal .  (44)
+
+	.  reduce 44
+
+
+state 50
+	ndbexpr : PROB LPARAN . const RPARAN  (46)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	MINUS  shift 23
+	.  error
+
+	const  goto 76
+
+
+state 51
+	expr : LPARAN expr . RPARAN  (20)
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+	affexpr : expr . EQ expr  (35)
+	literal : expr . LEQ expr  (40)
+	literal : expr . GEQ expr  (41)
+	literal : expr . LT expr  (42)
+	literal : expr . GT expr  (43)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	LT  shift 58
+	GT  shift 59
+	LEQ  shift 60
+	GEQ  shift 61
+	EQ  shift 62
+	RPARAN  shift 77
+	.  error
+
+
+state 52
+	affexpr : LPARAN affexpr . RPARAN  (34)
+	affexpr : affexpr . AND affexpr  (37)
+
+	AND  shift 63
+	RPARAN  shift 78
+	.  error
+
+
+state 53
+	stmt : IF ndbexpr THEN . stmt ELSE stmt FI  (7)
+
+	ID  shift 3
+	SKIP  shift 4
+	IF  shift 5
+	WHILE  shift 6
+	ASSUME  shift 7
+	ASSERT  shift 8
+	LSQBRACKET  shift 9
+	LPARAN  shift 10
+	LBRACKET  shift 12
+	.  error
+
+	stmt  goto 79
+	assgn  goto 16
+	pvar  goto 17
+
+
+state 54
+	expr : expr PLUS . expr  (21)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 80
+	const  goto 31
+
+
+state 55
+	expr : expr STAR . expr  (23)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 81
+	const  goto 31
+
+
+state 56
+	expr : expr MINUS . expr  (22)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 82
+	const  goto 31
+
+
+state 57
+	expr : expr HAT . POSINT  (24)
+
+	POSINT  shift 83
+	.  error
+
+
+state 58
+	literal : expr LT . expr  (42)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 84
+	const  goto 31
+
+
+state 59
+	literal : expr GT . expr  (43)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 85
+	const  goto 31
+
+
+state 60
+	literal : expr LEQ . expr  (40)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 86
+	const  goto 31
+
+
+state 61
+	literal : expr GEQ . expr  (41)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 87
+	const  goto 31
+
+
+state 62
+	affexpr : expr EQ . expr  (35)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	MINUS  shift 23
+	LPARAN  shift 47
+	.  error
+
+	pvar  goto 29
+	expr  goto 88
+	const  goto 31
+
+
+state 63
+	affexpr : affexpr AND . affexpr  (37)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 26
+	.  error
+
+	pvar  goto 29
+	expr  goto 30
+	const  goto 31
+	affexpr  goto 89
+	literal  goto 33
+
+
+state 64
+	bexpr : affexpr OR . bexpr  (33)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	ID  shift 3
+	TRUE  shift 20
+	FALSE  shift 21
+	MINUS  shift 23
+	NOT  shift 24
+	LPARAN  shift 26
+	.  error
+
+	bexpr  goto 90
+	pvar  goto 29
+	expr  goto 30
+	const  goto 31
+	affexpr  goto 32
+	literal  goto 33
+
+
+state 65
+	stmt : WHILE bexpr DO . stmt OD  (8)
+
+	ID  shift 3
+	SKIP  shift 4
+	IF  shift 5
+	WHILE  shift 6
+	ASSUME  shift 7
+	ASSERT  shift 8
+	LSQBRACKET  shift 9
+	LPARAN  shift 10
+	LBRACKET  shift 12
+	.  error
+
+	stmt  goto 91
+	assgn  goto 16
+	pvar  goto 17
+
+
+state 66
+	stmt : LSQBRACKET bexpr RSQBRACKET .  (10)
+	stmt : LSQBRACKET bexpr RSQBRACKET . stmt  (13)
+
+	ID  shift 3
+	SKIP  shift 4
+	IF  shift 5
+	WHILE  shift 6
+	ASSUME  shift 7
+	ASSERT  shift 8
+	LSQBRACKET  shift 9
+	LPARAN  shift 10
+	LBRACKET  shift 12
+	SEMICOLON  reduce 10
+	ELSE  reduce 10
+	FI  reduce 10
+	OD  reduce 10
+	RPARAN  reduce 10
+	EOF  reduce 10
+
+	stmt  goto 92
+	assgn  goto 16
+	pvar  goto 17
+
+
+state 67
+	stmt : LPARAN stmt RPARAN .  (5)
+
+	.  reduce 5
+
+
+state 68
+	stmt : LBRACKET bexpr RBRACKET .  (9)
+	stmt : LBRACKET bexpr RBRACKET . stmt  (12)
+
+	ID  shift 3
+	SKIP  shift 4
+	IF  shift 5
+	WHILE  shift 6
+	ASSUME  shift 7
+	ASSERT  shift 8
+	LSQBRACKET  shift 9
+	LPARAN  shift 10
+	LBRACKET  shift 12
+	SEMICOLON  reduce 9
+	ELSE  reduce 9
+	FI  reduce 9
+	OD  reduce 9
+	RPARAN  reduce 9
+	EOF  reduce 9
+
+	stmt  goto 93
+	assgn  goto 16
+	pvar  goto 17
+
+
+state 69
+	program : global stmt EOF .  (1)
+
+	.  reduce 1
+
+
+state 70
+	stmt : stmt . SEMICOLON stmt  (6)
+	stmt : stmt SEMICOLON stmt .  (6)
+
+	.  reduce 6
+
+
+state 71
+	pvar : ID .  (48)
+	dist : ID . LPARAN const_list RPARAN  (49)
+
+	LPARAN  shift 94
+	SEMICOLON  reduce 48
+	ELSE  reduce 48
+	FI  reduce 48
+	OD  reduce 48
+	PLUS  reduce 48
+	STAR  reduce 48
+	MINUS  reduce 48
+	HAT  reduce 48
+	RPARAN  reduce 48
+	EOF  reduce 48
+
+
+state 72
+	assgn : pvar ASSGN NDET . dom  (16)
+
+	INT  shift 95
+	REAL  shift 96
+	LPARAN  shift 97
+	.  error
+
+	dom  goto 98
+	dom_basis  goto 99
+
+
+state 73
+	assgn : pvar ASSGN expr .  (15)
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	SEMICOLON  reduce 15
+	ELSE  reduce 15
+	FI  reduce 15
+	OD  reduce 15
+	RPARAN  reduce 15
+	EOF  reduce 15
+
+
+state 74
+	assgn : pvar ASSGN dist .  (17)
+
+	.  reduce 17
+
+
+state 75
+	expr : LPARAN expr . RPARAN  (20)
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	RPARAN  shift 77
+	.  error
+
+
+state 76
+	ndbexpr : PROB LPARAN const . RPARAN  (46)
+
+	RPARAN  shift 100
+	.  error
+
+
+state 77
+	expr : LPARAN expr RPARAN .  (20)
+
+	.  reduce 20
+
+
+state 78
+	affexpr : LPARAN affexpr RPARAN .  (34)
+
+	.  reduce 34
+
+
+state 79
+	stmt : stmt . SEMICOLON stmt  (6)
+	stmt : IF ndbexpr THEN stmt . ELSE stmt FI  (7)
+
+	SEMICOLON  shift 42
+	ELSE  shift 101
+	.  error
+
+
+state 80
+	expr : expr . PLUS expr  (21)
+	expr : expr PLUS expr .  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+
+	STAR  shift 55
+	HAT  shift 57
+	ID  reduce 21
+	SKIP  reduce 21
+	SEMICOLON  reduce 21
+	IF  reduce 21
+	THEN  reduce 21
+	ELSE  reduce 21
+	FI  reduce 21
+	WHILE  reduce 21
+	DO  reduce 21
+	OD  reduce 21
+	ASSUME  reduce 21
+	ASSERT  reduce 21
+	PLUS  reduce 21
+	MINUS  reduce 21
+	AND  reduce 21
+	OR  reduce 21
+	LSQBRACKET  reduce 21
+	RSQBRACKET  reduce 21
+	LT  reduce 21
+	GT  reduce 21
+	LEQ  reduce 21
+	GEQ  reduce 21
+	EQ  reduce 21
+	LPARAN  reduce 21
+	RPARAN  reduce 21
+	LBRACKET  reduce 21
+	RBRACKET  reduce 21
+	EOF  reduce 21
+
+
+state 81
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr STAR expr .  (23)
+	expr : expr . HAT POSINT  (24)
+
+	HAT  shift 57
+	ID  reduce 23
+	SKIP  reduce 23
+	SEMICOLON  reduce 23
+	IF  reduce 23
+	THEN  reduce 23
+	ELSE  reduce 23
+	FI  reduce 23
+	WHILE  reduce 23
+	DO  reduce 23
+	OD  reduce 23
+	ASSUME  reduce 23
+	ASSERT  reduce 23
+	PLUS  reduce 23
+	STAR  reduce 23
+	MINUS  reduce 23
+	AND  reduce 23
+	OR  reduce 23
+	LSQBRACKET  reduce 23
+	RSQBRACKET  reduce 23
+	LT  reduce 23
+	GT  reduce 23
+	LEQ  reduce 23
+	GEQ  reduce 23
+	EQ  reduce 23
+	LPARAN  reduce 23
+	RPARAN  reduce 23
+	LBRACKET  reduce 23
+	RBRACKET  reduce 23
+	EOF  reduce 23
+
+
+state 82
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr MINUS expr .  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+
+	STAR  shift 55
+	HAT  shift 57
+	ID  reduce 22
+	SKIP  reduce 22
+	SEMICOLON  reduce 22
+	IF  reduce 22
+	THEN  reduce 22
+	ELSE  reduce 22
+	FI  reduce 22
+	WHILE  reduce 22
+	DO  reduce 22
+	OD  reduce 22
+	ASSUME  reduce 22
+	ASSERT  reduce 22
+	PLUS  reduce 22
+	MINUS  reduce 22
+	AND  reduce 22
+	OR  reduce 22
+	LSQBRACKET  reduce 22
+	RSQBRACKET  reduce 22
+	LT  reduce 22
+	GT  reduce 22
+	LEQ  reduce 22
+	GEQ  reduce 22
+	EQ  reduce 22
+	LPARAN  reduce 22
+	RPARAN  reduce 22
+	LBRACKET  reduce 22
+	RBRACKET  reduce 22
+	EOF  reduce 22
+
+
+state 83
+	expr : expr HAT POSINT .  (24)
+
+	.  reduce 24
+
+
+state 84
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+	literal : expr LT expr .  (42)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	ID  reduce 42
+	SKIP  reduce 42
+	SEMICOLON  reduce 42
+	IF  reduce 42
+	THEN  reduce 42
+	ELSE  reduce 42
+	FI  reduce 42
+	WHILE  reduce 42
+	DO  reduce 42
+	OD  reduce 42
+	ASSUME  reduce 42
+	ASSERT  reduce 42
+	AND  reduce 42
+	OR  reduce 42
+	LSQBRACKET  reduce 42
+	RSQBRACKET  reduce 42
+	LPARAN  reduce 42
+	RPARAN  reduce 42
+	LBRACKET  reduce 42
+	RBRACKET  reduce 42
+	EOF  reduce 42
+
+
+state 85
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+	literal : expr GT expr .  (43)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	ID  reduce 43
+	SKIP  reduce 43
+	SEMICOLON  reduce 43
+	IF  reduce 43
+	THEN  reduce 43
+	ELSE  reduce 43
+	FI  reduce 43
+	WHILE  reduce 43
+	DO  reduce 43
+	OD  reduce 43
+	ASSUME  reduce 43
+	ASSERT  reduce 43
+	AND  reduce 43
+	OR  reduce 43
+	LSQBRACKET  reduce 43
+	RSQBRACKET  reduce 43
+	LPARAN  reduce 43
+	RPARAN  reduce 43
+	LBRACKET  reduce 43
+	RBRACKET  reduce 43
+	EOF  reduce 43
+
+
+state 86
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+	literal : expr LEQ expr .  (40)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	ID  reduce 40
+	SKIP  reduce 40
+	SEMICOLON  reduce 40
+	IF  reduce 40
+	THEN  reduce 40
+	ELSE  reduce 40
+	FI  reduce 40
+	WHILE  reduce 40
+	DO  reduce 40
+	OD  reduce 40
+	ASSUME  reduce 40
+	ASSERT  reduce 40
+	AND  reduce 40
+	OR  reduce 40
+	LSQBRACKET  reduce 40
+	RSQBRACKET  reduce 40
+	LPARAN  reduce 40
+	RPARAN  reduce 40
+	LBRACKET  reduce 40
+	RBRACKET  reduce 40
+	EOF  reduce 40
+
+
+state 87
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+	literal : expr GEQ expr .  (41)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	ID  reduce 41
+	SKIP  reduce 41
+	SEMICOLON  reduce 41
+	IF  reduce 41
+	THEN  reduce 41
+	ELSE  reduce 41
+	FI  reduce 41
+	WHILE  reduce 41
+	DO  reduce 41
+	OD  reduce 41
+	ASSUME  reduce 41
+	ASSERT  reduce 41
+	AND  reduce 41
+	OR  reduce 41
+	LSQBRACKET  reduce 41
+	RSQBRACKET  reduce 41
+	LPARAN  reduce 41
+	RPARAN  reduce 41
+	LBRACKET  reduce 41
+	RBRACKET  reduce 41
+	EOF  reduce 41
+
+
+state 88
+	expr : expr . PLUS expr  (21)
+	expr : expr . MINUS expr  (22)
+	expr : expr . STAR expr  (23)
+	expr : expr . HAT POSINT  (24)
+	affexpr : expr EQ expr .  (35)
+
+	PLUS  shift 54
+	STAR  shift 55
+	MINUS  shift 56
+	HAT  shift 57
+	ID  reduce 35
+	SKIP  reduce 35
+	SEMICOLON  reduce 35
+	IF  reduce 35
+	THEN  reduce 35
+	ELSE  reduce 35
+	FI  reduce 35
+	WHILE  reduce 35
+	DO  reduce 35
+	OD  reduce 35
+	ASSUME  reduce 35
+	ASSERT  reduce 35
+	AND  reduce 35
+	OR  reduce 35
+	LSQBRACKET  reduce 35
+	RSQBRACKET  reduce 35
+	LPARAN  reduce 35
+	RPARAN  reduce 35
+	LBRACKET  reduce 35
+	RBRACKET  reduce 35
+	EOF  reduce 35
+
+
+state 89
+	affexpr : affexpr . AND affexpr  (37)
+	affexpr : affexpr AND affexpr .  (37)
+
+	.  reduce 37
+
+
+state 90
+	bexpr : affexpr OR bexpr .  (33)
+
+	.  reduce 33
+
+
+state 91
+	stmt : stmt . SEMICOLON stmt  (6)
+	stmt : WHILE bexpr DO stmt . OD  (8)
+
+	SEMICOLON  shift 42
+	OD  shift 102
+	.  error
+
+
+state 92
+	stmt : stmt . SEMICOLON stmt  (6)
+	stmt : LSQBRACKET bexpr RSQBRACKET stmt .  (13)
+
+	.  reduce 13
+
+
+state 93
+	stmt : stmt . SEMICOLON stmt  (6)
+	stmt : LBRACKET bexpr RBRACKET stmt .  (12)
+
+	.  reduce 12
+
+
+state 94
+	dist : ID LPARAN . const_list RPARAN  (49)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	MINUS  shift 23
+	.  error
+
+	const  goto 103
+	const_list  goto 104
+
+
+state 95
+	dom_basis : INT .  (28)
+	dom_basis : INT . LSQBRACKET const COMMA const RSQBRACKET  (30)
+
+	LSQBRACKET  shift 105
+	SEMICOLON  reduce 28
+	ELSE  reduce 28
+	FI  reduce 28
+	OD  reduce 28
+	OR  reduce 28
+	RPARAN  reduce 28
+	EOF  reduce 28
+
+
+state 96
+	dom_basis : REAL .  (29)
+	dom_basis : REAL . LSQBRACKET const COMMA const RSQBRACKET  (31)
+
+	LSQBRACKET  shift 106
+	SEMICOLON  reduce 29
+	ELSE  reduce 29
+	FI  reduce 29
+	OD  reduce 29
+	OR  reduce 29
+	RPARAN  reduce 29
+	EOF  reduce 29
+
+
+state 97
+	dom : LPARAN . dom RPARAN  (25)
+
+	INT  shift 95
+	REAL  shift 96
+	LPARAN  shift 97
+	.  error
+
+	dom  goto 107
+	dom_basis  goto 99
+
+
+state 98
+	assgn : pvar ASSGN NDET dom .  (16)
+
+	.  reduce 16
+
+
+state 99
+	dom : dom_basis .  (26)
+	dom : dom_basis . OR dom  (27)
+
+	OR  shift 108
+	SEMICOLON  reduce 26
+	ELSE  reduce 26
+	FI  reduce 26
+	OD  reduce 26
+	RPARAN  reduce 26
+	EOF  reduce 26
+
+
+state 100
+	ndbexpr : PROB LPARAN const RPARAN .  (46)
+
+	.  reduce 46
+
+
+state 101
+	stmt : IF ndbexpr THEN stmt ELSE . stmt FI  (7)
+
+	ID  shift 3
+	SKIP  shift 4
+	IF  shift 5
+	WHILE  shift 6
+	ASSUME  shift 7
+	ASSERT  shift 8
+	LSQBRACKET  shift 9
+	LPARAN  shift 10
+	LBRACKET  shift 12
+	.  error
+
+	stmt  goto 109
+	assgn  goto 16
+	pvar  goto 17
+
+
+state 102
+	stmt : WHILE bexpr DO stmt OD .  (8)
+
+	.  reduce 8
+
+
+state 103
+	const_list : const .  (50)
+	const_list : const . COMMA const_list  (51)
+
+	COMMA  shift 110
+	RPARAN  reduce 50
+
+
+state 104
+	dist : ID LPARAN const_list . RPARAN  (49)
+
+	RPARAN  shift 111
+	.  error
+
+
+state 105
+	dom_basis : INT LSQBRACKET . const COMMA const RSQBRACKET  (30)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	MINUS  shift 23
+	.  error
+
+	const  goto 112
+
+
+state 106
+	dom_basis : REAL LSQBRACKET . const COMMA const RSQBRACKET  (31)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	MINUS  shift 23
+	.  error
+
+	const  goto 113
+
+
+state 107
+	dom : LPARAN dom . RPARAN  (25)
+
+	RPARAN  shift 114
+	.  error
+
+
+state 108
+	dom : dom_basis OR . dom  (27)
+
+	INT  shift 95
+	REAL  shift 96
+	LPARAN  shift 97
+	.  error
+
+	dom  goto 115
+	dom_basis  goto 99
+
+
+state 109
+	stmt : stmt . SEMICOLON stmt  (6)
+	stmt : IF ndbexpr THEN stmt ELSE stmt . FI  (7)
+
+	SEMICOLON  shift 42
+	FI  shift 116
+	.  error
+
+
+state 110
+	const_list : const COMMA . const_list  (51)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	MINUS  shift 23
+	.  error
+
+	const  goto 103
+	const_list  goto 117
+
+
+state 111
+	dist : ID LPARAN const_list RPARAN .  (49)
+
+	.  reduce 49
+
+
+state 112
+	dom_basis : INT LSQBRACKET const . COMMA const RSQBRACKET  (30)
+
+	COMMA  shift 118
+	.  error
+
+
+state 113
+	dom_basis : REAL LSQBRACKET const . COMMA const RSQBRACKET  (31)
+
+	COMMA  shift 119
+	.  error
+
+
+state 114
+	dom : LPARAN dom RPARAN .  (25)
+
+	.  reduce 25
+
+
+state 115
+	dom : dom_basis OR dom .  (27)
+
+	.  reduce 27
+
+
+state 116
+	stmt : IF ndbexpr THEN stmt ELSE stmt FI .  (7)
+
+	.  reduce 7
+
+
+state 117
+	const_list : const COMMA const_list .  (51)
+
+	.  reduce 51
+
+
+state 118
+	dom_basis : INT LSQBRACKET const COMMA . const RSQBRACKET  (30)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	MINUS  shift 23
+	.  error
+
+	const  goto 120
+
+
+state 119
+	dom_basis : REAL LSQBRACKET const COMMA . const RSQBRACKET  (31)
+
+	FLOAT  shift 18
+	POSINT  shift 19
+	MINUS  shift 23
+	.  error
+
+	const  goto 121
+
+
+state 120
+	dom_basis : INT LSQBRACKET const COMMA const . RSQBRACKET  (30)
+
+	RSQBRACKET  shift 122
+	.  error
+
+
+state 121
+	dom_basis : REAL LSQBRACKET const COMMA const . RSQBRACKET  (31)
+
+	RSQBRACKET  shift 123
+	.  error
+
+
+state 122
+	dom_basis : INT LSQBRACKET const COMMA const RSQBRACKET .  (30)
+
+	.  reduce 30
+
+
+state 123
+	dom_basis : REAL LSQBRACKET const COMMA const RSQBRACKET .  (31)
+
+	.  reduce 31
+
+
+45 terminals, 17 nonterminals
+58 grammar rules, 124 states
